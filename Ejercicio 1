@@ -5,8 +5,8 @@ _start:
   movia r8, 0x15555 # Pares 010101010101010101
   movia r9, 0x2aaaa # Impares 101010101010101010
   addi r7, r7, -1 # Servira para elegir pares o impares
-  addi r5, r5, 10000 # Contador del delay
 DISPLAY:
+  addi r5, r5, 10000 # Contador del delay
   addi r7, r7, 1
   andi r6, r7, 1
   beq r6, r0, MOSTRAR_PARES
@@ -17,7 +17,6 @@ MOSTRAR_PARES:
 WAIT:
   addi r5, r5, -1
   bne r5, r0, WAIT
-  addi r5, r5, 10000
   jmpi DISPLAY
   .end
   
