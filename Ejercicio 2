@@ -1,0 +1,14 @@
+.text
+.global _start
+_start:
+  movia r4, 0x100000010
+DISPLAY:
+  addi r5, r5, 10000 # Contador para el delay
+  ldwio r6, 0(r4)
+  roli r6, r6, 1 # Rotamos un bit a la izquierda
+  stwio r6, 0(r4)
+WAIT:
+  addi r5, r5, -1
+  bne r5, r0, WAIT
+  jmpi DISPLAY
+  .end
