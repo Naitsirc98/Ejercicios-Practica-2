@@ -1,7 +1,7 @@
 .text 
 .global _start
 _start: 
-  movia r4, 0x10000020 # Switches
+  movia r4, 0x10000040 # Switches
   movia r6, 0x10000000 # LEDS rojos
 DISPLAY:
   addi r5, r5, 10000 # Contador del delay
