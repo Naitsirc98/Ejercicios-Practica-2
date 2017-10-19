@@ -1,0 +1,19 @@
+.text
+.global _start
+_start:
+  movia r4, 0x10000020
+  addi r5, r5, 10000 # Contador del delay
+  addi r6, r6, 0x3f # Cargamos en r6 la representacion del 0 en 7-segmentos
+  stwio r6, 0(r4) # Ponemos el primer display con un 0
+  jmpi WAIT
+DISPLAY:
+  addi r5, r5, 10000
+  ldwio r6, 0(r4)
+  roli r6, r6, 8 # Cambiamos al siguiente 7-segmentos
+  stwio r6, 0(r4)
+WAIT: # delay
+  addi r5, r5, -1
+  bne r5, r0, WAIT
+  jmpi DISPLAY
+  .end
+  
