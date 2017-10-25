@@ -1,0 +1,50 @@
+.text
+.global _start
+_start:
+  movia r4, 0x10001000 # data register
+  movia r5, TEXT
+MAIN:
+  ldb r6, 0(r5) # leemos un caracter del texto
+  beq r6, r0, GET_CHAR # si es igual a 0, ha terminado
+  call PUT_CHAR # guardamos el caracter
+  addi r5, r5, 1
+  br MAIN
+GET_CHAR:
+  ldwio r8, 0(r4) # Leemos el registro de datos del JTAG UART
+  andi r5, r8, 0x8000 # Vemos si hay nuevos datos (RVALID, i = 15)
+  beq r5, r0, GET_CHAR # Si no, esperamos por nuevos datos
+  andi r5, r8, 0x00ff # el dato se encuentra en el byte menos significativo
+  call PUT_CHAR
+  br GET_CHAR
+PUT_CHAR:
+  ldwio r5, 4(r4) # leemos el control register
+  andhi r5, r5, 0xffff # comprobamos que hay hueco libre
+  beq r5, r0, PUT_CHAR # si no hay hueco, esperamos
+  addi r10, r0, 32 # la diferencia entre un caracter y sus versiones minuscula y mayuscula
+  
+  # Cambiamos de mayusculas a minusculas y viceversa
+  
+  # ----> A minusculas
+  addi r9, r6, -97 
+  # Si es menor que 0 o mayor a 32, significa que esta fuera del rango de las mayusculas
+  blt r9, r0, TO_UPPER
+  bgt r9, r10, PUT
+  addi r6, r6, 32
+  br PUT
+  # ----> A mayusculas
+TO_UPPER: 
+  addi r9, r6, -65
+  # Si es menor que 0 o mayor a 32, significa que esta fuera del rango de las minusculas
+  blt r9, r0, PUT
+  bgt r9, r10, PUT
+  addi r6, r6, -32
+  
+PUT: # Metemos el caracter en el JTAG UART
+  stwio r6, 0(r4)
+  ret
+  
+  .data
+TEXT:
+  .asciz "DeclaRA VAriaBleS, No la GUERRA\n"
+  .end
+  
