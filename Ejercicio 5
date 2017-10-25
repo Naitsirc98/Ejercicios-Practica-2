@@ -3,11 +3,13 @@
 _start:
   movia r4, 0x10000050 # direccion de los botones
   movia r5, 0x10000020 # direccion del primer 7-segmentos
+  ldb r6, VALUES(r0)
   stwio r6, 0(r5) # se pone el display a 0 por defecto
 MAIN:
   addi r7, r0, 10000 # contador del delay
   ldwio r8, 0(r4) # valor de los botones
-  mov r2, r0
+  beq r8, r0, WAIT
+  addi r2, r2, 1
 WHILE: # iremos mirando que boton se ha pulsado
   beq r8, r2, FINISH
   addi r2, r2, 1
