@@ -1,0 +1,28 @@
+.text
+.global _start
+_start:
+  movia r4, 0x10000050 # direccion de los botones
+  movia r5, 0x10000020 # direccion del primer 7-segmentos
+  stwio r6, 0(r5) # se pone el display a 0 por defecto
+MAIN:
+  addi r7, r0, 10000 # contador del delay
+  ldwio r8, 0(r4) # valor de los botones
+  mov r2, r0
+WHILE: # iremos mirando que boton se ha pulsado
+  beq r8, r2, FINISH
+  addi r2, r2, 1
+  br WHILE
+FINISH:
+  ldb r3, VALUES(r2)
+  stbio r3, 0(r5)
+WAIT:
+  addi r7, r7, -1
+  bne r7, r0, WAIT
+  br MAIN
+
+.data
+VALUES:
+  .byte 0x3f, 0x6, 0x5b, 0x4f # valores 0, 1, 2, 3 del display 7-segmentos
+.end
+  
+  
